@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Acme.BookStore.Authors
 {
-    internal static class AuthorConsts
+    public class AuthorConsts
     {
         public const int MaxNameLength = 64;
     }

@@ -1,4 +1,5 @@
-﻿using Acme.BookStore.Books;
+﻿using Acme.BookStore.Authors;
+using Acme.BookStore.Books;
 using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
@@ -27,6 +28,7 @@ public class BookStoreDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Book> Books { get;set; }
+    public DbSet<Author> Authors { get;set; }
 
     #region Entities from the modules
 
@@ -90,6 +92,21 @@ public class BookStoreDbContext :
             b.ToTable("Books", BookStoreConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(x=>x.Name).IsRequired().HasMaxLength(128);
+        });
+
+        builder.Entity<Author>(b =>
+        {
+            b.ToTable("Author", BookStoreConsts.DbSchema);
+            b.ConfigureByConvention();
+
+            b.Property(c => c.Name)
+            //配置此属性是否必须分配一个值，或者 null 是否是有效的值。 只有在属性基于可分配 的 CLR 类型时，才能将其配置为非必需 null 属性。
+            .IsRequired()
+            //配置可在此属性中存储的数据的最大长度。 最大长度只能在 (包括) 属性的数组属性上设置 String 。
+            .HasMaxLength(AuthorConsts.MaxNameLength);
+
+            //创建索引
+            b.HasIndex(c=>c.Name);
         });
     }
 }

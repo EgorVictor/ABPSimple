@@ -9,6 +9,11 @@ namespace Acme.BookStore.Authors
 {
     public interface IAuthorRepository:IRepository<Author,Guid>
     {
+        /// <summary>
+        /// 此方法仅用于学习,IRepository中已经定义IQueryable
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         Task<Author> FindByNameAsync(string name);
 
         Task<List<Author>> GetListAsync(
