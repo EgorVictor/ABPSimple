@@ -15,5 +15,6 @@ public class BookStoreApplicationAutoMapperProfile : Profile
         CreateMap<Book, BookDto>();
         //界面新增或更新图书时,将对象转化为Book
         CreateMap<CreateUpdateBookDto, Book>();
+        CreateMap<BookDto, CreateUpdateBookDto>();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Acme.BookStore.Localization;
 using Acme.BookStore.MultiTenancy;
+using Acme.BookStore.Permissions;
 using Volo.Abp.Identity.Web.Navigation;
 using Volo.Abp.SettingManagement.Web.Navigation;
 using Volo.Abp.TenantManagement.Web.Navigation;
@@ -33,16 +34,22 @@ public class BookStoreMenuContributor : IMenuContributor
                 order: 0
             )
         );
-        context.Menu.AddItem(
+        ApplicationMenu bookStoreMenu = context.Menu.AddItem(
             new ApplicationMenuItem(
                BookStoreMenus.Home, l["Menu:BookStore"], icon: "fa fa-book"
-                ).AddItem(
-                new ApplicationMenuItem(
-                   BookStoreMenus.Books, l["Menu:Books"], url: "/Books"
-                    )
                 )
             );
 
+        if (await context.IsGrantedAsync(BookStorePermissions.Books.Default))
+        {
+            bookStoreMenu.AddItem(
+                new ApplicationMenuItem(
+                    BookStoreMenus.Books, l["Menu:Books"], url: "/Books"
+                    )
+                );
+        }
+
+        //多租户相关设置
         if (MultiTenancyConsts.IsEnabled)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

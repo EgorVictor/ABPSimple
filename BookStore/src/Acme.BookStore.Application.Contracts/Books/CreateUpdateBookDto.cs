@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 
 namespace Acme.BookStore.Books
 {
@@ -15,11 +16,11 @@ namespace Acme.BookStore.Books
         public string Name { get; set; }
 
         [Required]
-        public BookType Type { get; set; }
+        public BookType Type { get; set; } = BookType.Undefined;
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime PublisherDate { get; set; }
+        public DateTime PublishDate { get; set; }=DateTime.Now;
 
         [Required]
         public float Price { get; set; }
