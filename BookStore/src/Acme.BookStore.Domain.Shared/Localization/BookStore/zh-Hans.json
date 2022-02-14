@@ -1,8 +1,17 @@
 {
-    "culture": "zh-Hans",
-    "texts": {
-      "Menu:Home": "首页",
-      "Welcome": "欢迎",
-      "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io."
-    }
+  "culture": "zh-Hans",
+  "texts": {
+    "Menu:Home": "首页",
+    "Welcome": "欢迎",
+    "LongWelcomeMessage": "欢迎来到该应用程序. 这是一个基于ABP框架的启动项目. 有关更多信息, 请访问 abp.io.",
+    "Edit": "编辑",
+    "Delete": "删除",
+    "Actions": "操作",
+    "Name": "名称",
+    "BirthDate": "生日",
+    "NewAuthor": "新建作者",
+    "Authors": "作者列表",
+    "ShortBio": "简介",
+    "Update": "更新"
   }
+}

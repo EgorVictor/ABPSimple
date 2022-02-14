@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Acme.BookStore.Migrations
 {
-    public partial class Create_Books_Entity : Migration
+    public partial class Added_AuthorId_To_Book : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -277,24 +277,26 @@ namespace Acme.BookStore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Books",
+                name: "Author",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ShortBio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
                     CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    LastModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    LastModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    DeleterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Books", x => x.Id);
+                    table.PrimaryKey("PK_Author", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -710,6 +712,34 @@ namespace Acme.BookStore.Migrations
                         name: "FK_AbpUserTokens_AbpUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AbpUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Books",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Price = table.Column<float>(type: "real", nullable: false),
+                    AuthorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExtraProperties = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: true),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    LastModificationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifierId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Books", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Books_Author_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Author",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -1213,6 +1243,16 @@ namespace Acme.BookStore.Migrations
                 column: "UserName");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Author_Name",
+                table: "Author",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Books_AuthorId",
+                table: "Books",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_IdentityServerClients_ClientId",
                 table: "IdentityServerClients",
                 column: "ClientId");
@@ -1376,6 +1416,9 @@ namespace Acme.BookStore.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpUsers");
+
+            migrationBuilder.DropTable(
+                name: "Author");
 
             migrationBuilder.DropTable(
                 name: "IdentityServerApiResources");

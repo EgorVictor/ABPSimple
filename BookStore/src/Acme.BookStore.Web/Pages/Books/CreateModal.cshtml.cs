@@ -1,30 +1,68 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using Acme.BookStore.Books;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Form;
 
 namespace Acme.BookStore.Web.Pages.Books
 {
     public class CreateModalModel : BookStorePageModel
     {
-        //BindProperty属性将发布请求数据绑定到此属性
         [BindProperty]
-        public CreateUpdateBookDto Book { get; set; }
-        public IBookAppService bookAppService;
+        public CreateBookViewModel Book { get; set; }
 
-        public CreateModalModel(IBookAppService bookAppService)
+        public List<SelectListItem> Authors { get; set; }
+
+        private readonly IBookAppService _bookAppService;
+
+        public CreateModalModel(
+            IBookAppService bookAppService)
         {
-            this.bookAppService = bookAppService;
+            _bookAppService = bookAppService;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            Book = new CreateUpdateBookDto();
+            Book = new CreateBookViewModel();
+
+            var authorLookup = await _bookAppService.GetAuthorLookupAsync();
+            Authors = authorLookup.Items
+                .Select(x => new SelectListItem(x.Name, x.Id.ToString()))
+                .ToList();
         }
+
         public async Task<IActionResult> OnPostAsync()
         {
-            await bookAppService.CreateAsync(Book);
+            await _bookAppService.CreateAsync(
+                ObjectMapper.Map<CreateBookViewModel, CreateUpdateBookDto>(Book)
+                );
             return NoContent();
+        }
+
+        public class CreateBookViewModel
+        {
+            [SelectItems(nameof(Authors))]
+            [DisplayName("Author")]
+            public Guid AuthorId { get; set; }
+
+            [Required]
+            [StringLength(128)]
+            public string Name { get; set; }
+
+            [Required]
+            public BookType Type { get; set; } = BookType.Undefined;
+
+            [Required]
+            [DataType(DataType.Date)]
+            public DateTime PublishDate { get; set; } = DateTime.Now;
+
+            [Required]
+            public float Price { get; set; }
         }
     }
 }

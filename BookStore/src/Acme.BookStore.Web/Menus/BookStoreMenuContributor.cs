@@ -49,6 +49,16 @@ public class BookStoreMenuContributor : IMenuContributor
                 );
         }
 
+        if (await context.IsGrantedAsync(BookStorePermissions.Authors.Default))
+        {
+            bookStoreMenu.AddItem(new ApplicationMenuItem(
+               BookStoreMenus.Authors,
+                l["Menu:Authors"],
+                url: "/Authors"
+            ));
+        }
+
+
         //多租户相关设置
         if (MultiTenancyConsts.IsEnabled)
         {

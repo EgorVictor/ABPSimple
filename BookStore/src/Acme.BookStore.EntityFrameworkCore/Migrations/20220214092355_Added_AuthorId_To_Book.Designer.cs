@@ -13,8 +13,8 @@ using Volo.Abp.EntityFrameworkCore;
 namespace Acme.BookStore.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    [Migration("20220211105623_Add_Authors_Entitys")]
-    partial class Add_Authors_Entitys
+    [Migration("20220214092355_Added_AuthorId_To_Book")]
+    partial class Added_AuthorId_To_Book
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,6 +94,9 @@ namespace Acme.BookStore.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(40)
@@ -135,6 +138,8 @@ namespace Acme.BookStore.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Books", (string)null);
                 });
@@ -2065,6 +2070,15 @@ namespace Acme.BookStore.Migrations
                     b.HasKey("TenantId", "Name");
 
                     b.ToTable("AbpTenantConnectionStrings", (string)null);
+                });
+
+            modelBuilder.Entity("Acme.BookStore.Books.Book", b =>
+                {
+                    b.HasOne("Acme.BookStore.Authors.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Volo.Abp.AuditLogging.AuditLogAction", b =>

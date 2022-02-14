@@ -28,7 +28,7 @@ public class BookStoreDbContext :
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
     public DbSet<Book> Books { get;set; }
-    public DbSet<Author> Authors { get;set; }
+    public DbSet<Author> Authors { get; set; }
 
     #region Entities from the modules
 
@@ -60,7 +60,6 @@ public class BookStoreDbContext :
     public BookStoreDbContext(DbContextOptions<BookStoreDbContext> options)
         : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -92,6 +91,9 @@ public class BookStoreDbContext :
             b.ToTable("Books", BookStoreConsts.DbSchema);
             b.ConfigureByConvention();
             b.Property(x=>x.Name).IsRequired().HasMaxLength(128);
+
+            //添加映射关系
+            b.HasOne<Author>().WithMany().HasForeignKey(c => c.AuthorId).IsRequired();
         });
 
         builder.Entity<Author>(b =>

@@ -1,4 +1,5 @@
-﻿using Acme.BookStore.Books;
+﻿using Acme.BookStore.Authors;
+using Acme.BookStore.Books;
 using AutoMapper;
 
 namespace Acme.BookStore;
@@ -16,5 +17,10 @@ public class BookStoreApplicationAutoMapperProfile : Profile
         //界面新增或更新图书时,将对象转化为Book
         CreateMap<CreateUpdateBookDto, Book>();
         CreateMap<BookDto, CreateUpdateBookDto>();
+
+        CreateMap<Author, AuthorDto>();
+
+        CreateMap<Author, AuthorLookupDto>();
+
     }
 }
